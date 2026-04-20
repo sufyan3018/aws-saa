@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AWS SAA Study Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0e1a;
+    --bg2: #111728;
+    --bg3: #161d30;
+    --sidebar: #0d1120;
+    --card: #141a2e;
+    --card2: #1a2240;
+    --border: #1f2d50;
+    --orange: #ff9500;
+    --orange2: #ffb340;
+    --orange-glow: rgba(255,149,0,0.18);
+    --blue: #4f9cf9;
+    --blue2: #7eb8ff;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --purple: #a78bfa;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --accent: #ff9500;
+    --radius: 12px;
+    --radius-sm: 7px;
+    --sidebar-w: 270px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- SIDEBAR ---- */
+  #sidebar {
+    position: fixed; top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    z-index: 100;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+    overflow: hidden;
+  }
+
+  .sidebar-logo {
+    padding: 22px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .sidebar-logo h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .sidebar-logo h1 span { color: var(--orange); }
+  .sidebar-logo p {
+    font-size: 0.7rem;
+    color: var(--text3);
+    margin-top: 3px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-search {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .sidebar-search input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px 8px 34px;
+    color: var(--text);
+    font-size: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .sidebar-search input:focus { border-color: var(--orange); }
+  .sidebar-search input::placeholder { color: var(--text3); }
+  .search-wrap { position: relative; }
+  .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 0.85rem; pointer-events: none;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0 20px;
+  }
+  .sidebar-nav::-webkit-scrollbar { width: 4px; }
+  .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+  .sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .nav-section-label {
+    font-size: 0.62rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 14px 18px 6px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 18px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.15s;
+    position: relative;
+    font-size: 0.83rem;
+    color: var(--text2);
+    border-left: 2px solid transparent;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active {
+    background: var(--orange-glow);
+    color: var(--orange);
+    border-left-color: var(--orange);
+    font-weight: 600;
+  }
+  .nav-item .nav-icon { font-size: 0.95rem; width: 18px; text-align: center; }
+  .nav-item .nav-badge {
+    margin-left: auto;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1px 7px;
+    font-size: 0.65rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  .nav-item.active .nav-badge {
+    background: var(--orange-glow);
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+  .nav-item .nav-check {
+    margin-left: auto;
+    color: var(--green);
+    font-size: 0.8rem;
+    display: none;
+  }
+  .nav-item.done .nav-check { display: block; }
+  .nav-item.done .nav-badge { display: none; }
+
+  .sidebar-progress {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .sidebar-progress .prog-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.72rem; color: var(--text3); margin-bottom: 6px;
+  }
+  .sidebar-progress .prog-label span:last-child { color: var(--orange); font-weight: 600; }
+  .prog-bar-bg {
+    background: var(--bg3);
+    border-radius: 10px; height: 5px; overflow: hidden;
+  }
+  .prog-bar-fill {
+    height: 100%; background: linear-gradient(90deg, var(--orange), var(--orange2));
+    border-radius: 10px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  /* ---- TOPBAR ---- */
+  #topbar {
+    position: fixed; top: 0;
+    left: var(--sidebar-w);
+    right: 0;
+    height: 56px;
+    background: rgba(11,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    z-index: 90;
+    gap: 14px;
+  }
+  .topbar-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.0rem;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+  .topbar-title span { color: var(--orange); }
+  .topbar-actions { display: flex; gap: 8px; }
+  .topbar-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text2);
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .topbar-btn:hover { background: var(--card2); color: var(--text); border-color: var(--orange); }
+  .topbar-btn.active-btn { background: var(--orange); color: #000; border-color: var(--orange); font-weight: 600; }
+  #menu-toggle {
+    display: none;
+    background: none; border: none;
+    color: var(--text); font-size: 1.3rem; cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  /* ---- MAIN ---- */
+  #main {
+    margin-left: var(--sidebar-w);
+    padding-top: 56px;
+    min-height: 100vh;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ---- HOME DASHBOARD ---- */
+  #home-view {
+    padding: 36px 32px 60px;
+  }
+  .home-hero {
+    background: linear-gradient(135deg, #0f1a38 0%, #1a2550 60%, #0f1a38 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(255,149,0,0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .home-hero h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.0rem;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .home-hero h2 span { color: var(--orange); }
+  .home-hero p { color: var(--text2); font-size: 0.9rem; max-width: 550px; line-height: 1.6; }
+  .hero-badge {
+    display: inline-block;
+    background: var(--orange-glow);
+    border: 1px solid var(--orange);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.72rem;
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+  }
+  .hero-stats {
+    display: flex; gap: 24px; margin-top: 22px;
+  }
+  .hero-stat {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+  }
+  .hero-stat .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--orange);
+  }
+  .hero-stat .stat-label {
+    font-size: 0.72rem;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .section-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 14px;
+    margin-top: 28px;
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .topic-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.22s;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .topic-card:hover {
+    border-color: var(--orange);
+    background: var(--card2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255,149,0,0.1);
+  }
+  .topic-card:hover::before { transform: scaleX(1); }
+  .topic-card .tc-icon { font-size: 1.6rem; margin-bottom: 10px; }
+  .topic-card .tc-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+  .topic-card .tc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .topic-card .tc-sub {
+    font-size: 0.75rem;
+    color: var(--text3);
+    line-height: 1.5;
+  }
+  .topic-card .tc-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px;
+  }
+  .topic-card .tc-count {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 9px;
+    font-size: 0.67rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  .tc-status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .topic-card.done .tc-status-dot { background: var(--green); }
+  .topic-card.done { border-color: rgba(52,211,153,0.3); }
+
+  /* ---- CONTENT VIEW ---- */
+  #content-view { padding: 32px 32px 80px; }
+
+  .content-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px; gap: 20px;
+    flex-wrap: wrap;
+  }
+  .content-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .content-header h2 span { color: var(--orange); }
+  .content-header p {
+    font-size: 0.83rem;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+  .mark-done-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text2);
+    padding: 9px 18px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 7px;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .mark-done-btn:hover { border-color: var(--green); color: var(--green); }
+  .mark-done-btn.done { background: rgba(52,211,153,0.1); border-color: var(--green); color: var(--green); }
+
+  /* View toggle tabs */
+  .view-tabs {
+    display: flex; gap: 4px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 22px;
+    width: fit-content;
+  }
+  .view-tab {
+    padding: 7px 18px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--text3);
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    border: none; background: none;
+  }
+  .view-tab:hover { color: var(--text2); }
+  .view-tab.active { background: var(--orange); color: #000; font-weight: 600; }
+
+  /* Accordion / Notes view */
+  .accordion-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .accordion-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .accordion-item:hover { border-color: var(--border); }
+  .accordion-item.open { border-color: var(--orange); }
+
+  .accordion-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .accordion-header:hover { background: var(--card2); }
+  .acc-icon { font-size: 1.1rem; }
+  .acc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+  .acc-keyword {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 9px;
+    font-size: 0.65rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.3px;
+  }
+  .acc-chevron {
+    color: var(--text3);
+    font-size: 0.9rem;
+    transition: transform 0.25s;
+    margin-left: 8px;
+  }
+  .accordion-item.open .acc-chevron { transform: rotate(180deg); }
+
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  .accordion-body-inner {
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+    margin-bottom: 14px;
+  }
+  .info-cell {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 13px;
+  }
+  .info-cell .ic-label {
+    font-size: 0.62rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .info-cell .ic-value {
+    font-size: 0.8rem;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .info-cell.highlight-orange { border-color: rgba(255,149,0,0.3); }
+  .info-cell.highlight-orange .ic-label { color: var(--orange); }
+
+  .key-points-box {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+  .key-points-box h4 {
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .key-points-box ul {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .key-points-box ul li {
+    font-size: 0.82rem;
+    color: var(--text);
+    display: flex; align-items: flex-start; gap: 7px;
+    line-height: 1.4;
+  }
+  .key-points-box ul li::before {
+    content: '▸';
+    color: var(--orange);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .exam-tip-box {
+    background: rgba(255,149,0,0.07);
+    border: 1px solid rgba(255,149,0,0.35);
+    border-radius: 9px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .exam-tip-box .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .exam-tip-box .tip-content .tip-label {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+  }
+  .exam-tip-box .tip-content p {
+    font-size: 0.82rem;
+    color: var(--text2);
+    line-height: 1.45;
+  }
+
+  /* Comparison Table */
+  .comparison-section {
+    margin-top: 28px;
+  }
+  .comp-section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text2);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .comp-section-title::before {
+    content: '';
+    display: block; height: 1px;
+    background: var(--border);
+    flex: 1;
+  }
+  .comp-section-title::after {
+    content: '';
+    display: block; height: 1px;
+    background: var(--border);
+    flex: 1;
+  }
+
+  .comp-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .comp-table thead tr {
+    background: var(--bg3);
+  }
+  .comp-table th {
+    padding: 11px 16px;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .comp-table th:first-child { color: var(--orange); }
+  .comp-table td {
+    padding: 10px 16px;
+    color: var(--text);
+    border-bottom: 1px solid rgba(31,45,80,0.5);
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .comp-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--blue2);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .comp-table tbody tr:last-child td { border-bottom: none; }
+  .comp-table tbody tr:hover { background: var(--card2); }
+
+  /* Flashcard view */
+  .flashcard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .flashcard {
+    perspective: 900px;
+    height: 180px;
+    cursor: pointer;
+  }
+  .flashcard-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back {
+    position: absolute; inset: 0;
+    border-radius: var(--radius);
+    backface-visibility: hidden;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 20px;
+    text-align: center;
+  }
+  .flashcard-front {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+  .flashcard-back {
+    background: linear-gradient(135deg, #0f1a38, #1a2550);
+    border: 1px solid rgba(255,149,0,0.35);
+    transform: rotateY(180deg);
+  }
+  .flashcard-front .fc-label {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+  .flashcard-front .fc-q {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .flashcard-back .fc-answer {
+    font-size: 0.85rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  .flashcard-back .fc-kw {
+    margin-top: 12px;
+    background: var(--orange-glow);
+    border: 1px solid var(--orange);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.68rem;
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+  }
+  .flashcard-front .fc-hint {
+    position: absolute;
+    bottom: 10px;
+    font-size: 0.65rem;
+    color: var(--text3);
+  }
+
+  /* Flashcard controls */
+  .fc-controls {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .fc-controls button {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text2);
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .fc-controls button:hover { border-color: var(--orange); color: var(--orange); }
+  .fc-info {
+    font-size: 0.75rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Search results */
+  #search-view { padding: 32px 32px 80px; }
+  .search-result-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .search-result-item:hover { border-color: var(--orange); background: var(--card2); }
+  .sri-path {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+  .sri-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .sri-preview {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+  mark { background: rgba(255,149,0,0.3); color: var(--orange2); border-radius: 3px; padding: 0 2px; }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+  .empty-state .es-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .empty-state h3 { font-family: 'Syne', sans-serif; color: var(--text2); margin-bottom: 6px; }
+  .empty-state p { font-size: 0.83rem; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    :root { --sidebar-w: 260px; }
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+    #main { margin-left: 0; }
+    #topbar { left: 0; }
+    #menu-toggle { display: block; }
+    #home-view, #content-view, #search-view { padding: 20px 16px 60px; }
+    .home-hero { padding: 22px 20px; }
+    .home-hero h2 { font-size: 1.5rem; }
+    .hero-stats { flex-wrap: wrap; gap: 10px; }
+    .info-grid { grid-template-columns: 1fr 1fr; }
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 99;
+    }
+    .sidebar-overlay.open { display: block; }
+  }
+
+  /* ---- FOOTER ---- */
+  .site-footer {
+    margin-left: var(--sidebar-w);
+    border-top: 1px solid var(--border);
+    background: var(--sidebar);
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-left {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .footer-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), #ff5f1f);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: #000;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px rgba(255,149,0,0.35);
+  }
+  .footer-text .ft-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .footer-text .ft-name span { color: var(--orange); }
+  .footer-text .ft-tagline {
+    font-size: 0.68rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-top: 1px;
+  }
+  .footer-center {
+    font-size: 0.75rem;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    text-align: center;
+    line-height: 1.6;
+  }
+  .footer-center .fc-heart { color: var(--orange); }
+  .footer-right {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .footer-badge {
+    background: var(--orange-glow);
+    border: 1px solid rgba(255,149,0,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.68rem;
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 768px) {
+    .site-footer {
+      margin-left: 0;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 18px 16px;
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 0.35s ease both; }
+  .fade-in-delay { animation: fadeInUp 0.35s ease 0.08s both; }
+  .fade-in-delay2 { animation: fadeInUp 0.35s ease 0.16s both; }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .live-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: pulse-dot 2s infinite;
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-logo">
+    <h1>AWS <span>SAA</span> Study Hub</h1>
+    <p>SAA-C03 · Solutions Architect</p>
+  </div>
+  <div class="sidebar-search">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="global-search" placeholder="Search topics, keywords..." />
+    </div>
+  </div>
+  <nav class="sidebar-nav" id="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" data-view="home">
+      <span class="nav-icon">🏠</span> Home Dashboard
+    </div>
+    <div class="nav-section-label">Sections</div>
+    <!-- Dynamically inserted -->
+  </nav>
+  <div class="sidebar-progress">
+    <div class="prog-label">
+      <span>Study Progress</span>
+      <span id="prog-text">0%</span>
+    </div>
+    <div class="prog-bar-bg">
+      <div class="prog-bar-fill" id="prog-bar"></div>
+    </div>
+  </div>
+</aside>
+
+<!-- TOPBAR -->
+<header id="topbar">
+  <button id="menu-toggle">☰</button>
+  <div class="topbar-title" id="topbar-title">
+    <span>AWS SAA</span> Study Hub
+  </div>
+  <div class="topbar-actions">
+    <button class="topbar-btn" id="reset-progress-btn">↺ Reset</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- HOME VIEW -->
+  <div id="home-view" class="view active">
+    <div class="home-hero fade-in">
+      <div class="hero-badge"><span class="live-dot"></span>SAA-C03 Exam Prep</div>
+      <h2>Master <span>AWS Solutions</span><br/>Architect Associate</h2>
+      <p>Structured notes, flashcards, comparison tables, and exam tips — all in one place. Study smarter, not harder.</p>
+      <div class="hero-stats" id="hero-stats"></div>
+    </div>
+    <div class="section-heading fade-in-delay">All Sections</div>
+    <div class="topic-grid fade-in-delay" id="topic-grid"></div>
+  </div>
+
+  <!-- CONTENT VIEW -->
+  <div id="content-view" class="view">
+    <div class="content-header">
+      <div>
+        <h2 id="cv-title"></h2>
+        <p id="cv-sub"></p>
+      </div>
+      <button class="mark-done-btn" id="mark-done-btn">
+        <span>✓</span> Mark as Done
+      </button>
+    </div>
+    <div class="view-tabs">
+      <button class="view-tab active" data-tab="notes">📋 Notes</button>
+      <button class="view-tab" data-tab="flashcards">🃏 Flashcards</button>
+      <button class="view-tab" data-tab="table">📊 Comparison</button>
+    </div>
+    <div id="tab-notes"></div>
+    <div id="tab-flashcards" style="display:none"></div>
+    <div id="tab-table" style="display:none"></div>
+  </div>
+
+  <!-- SEARCH VIEW -->
+  <div id="search-view" class="view">
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:6px;color:var(--text)">Search Results</h2>
+    <p style="font-size:0.82rem;color:var(--text3);margin-bottom:22px" id="search-result-label"></p>
+    <div id="search-results-list"></div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-left">
+    <div class="footer-avatar">S</div>
+    <div class="footer-text">
+      <div class="ft-name">Made by <span>Sufyan</span></div>
+      <div class="ft-tagline">// crafted with ☕ &amp; curiosity</div>
+    </div>
+  </div>
+  <div class="footer-center">
+    Built for the grind &nbsp;<span class="fc-heart">♥</span>&nbsp; AWS SAA-C03<br/>
+    Study hard · Think big · Pass it 🚀
+  </div>
+  <div class="footer-right">
+    <span class="footer-badge">SAA-C03</span>
+    <span class="footer-badge">v1.0</span>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const SECTIONS = [
+  {
+    id: 's1',
+    icon: '☁️',
+    title: 'AWS Basics',
+    subtitle: 'History, Console & Region Selection',
+    topics: [
+      {
+        title: 'AWS Cloud History',
+        keyword: 'evolution',
+        what: 'Evolution of AWS from internal infrastructure to global cloud platform',
+        why: 'Shows how AWS became scalable & reliable cloud leader',
+        useCase: 'Understanding cloud adoption & architecture evolution',
+        security: 'Mature ecosystem with continuous improvements',
+        reliability: 'Built over years → highly stable infrastructure',
+        performance: 'Constant innovation (EC2, S3 improvements)',
+        cost: 'Pay-as-you-go model introduced',
+        keyPoints: ['2002: Internal launch','2004: Public launch (SQS)','2006: EC2, S3 introduced','2007: Expansion to Europe'],
+        examTip: 'AWS is leader due to early start + global infra + scalability'
+      },
+      {
+        title: 'Tour of AWS Console',
+        keyword: 'console',
+        what: 'Web interface to manage AWS services',
+        why: 'Simplifies resource creation and monitoring',
+        useCase: 'Launch EC2, manage S3, configure services',
+        security: 'Login with IAM + MFA',
+        reliability: 'Central control panel for all services',
+        performance: 'UI-based management (not performance-focused)',
+        cost: 'Free to use (pay for services only)',
+        keyPoints: ['Global services: IAM, Route 53, CloudFront, WAF','Region-based services: EC2, Lambda, Beanstalk','IAM = global','Most services = regional'],
+        examTip: 'IAM = global. Most services = regional'
+      },
+      {
+        title: 'Global vs Regional Services',
+        keyword: 'scope',
+        what: 'Classification of AWS services based on scope',
+        why: 'Helps decide deployment architecture',
+        useCase: 'Choosing correct service location',
+        security: 'Global services control access centrally',
+        reliability: 'Regional isolation improves fault tolerance',
+        performance: 'Regional services reduce latency',
+        cost: 'Region choice impacts pricing',
+        keyPoints: ['Global → IAM, Route 53, CloudFront','Regional → EC2, Lambda, RDS'],
+        examTip: 'If question mentions "global access" → think CloudFront / Route 53'
+      },
+      {
+        title: 'How to Choose an AWS Region',
+        keyword: 'region',
+        what: 'Criteria to select AWS deployment region',
+        why: 'Impacts latency, cost, compliance, services',
+        useCase: 'Deploying applications globally',
+        security: 'Data compliance (data stays in region)',
+        reliability: 'Multiple AZs in region improve fault tolerance',
+        performance: 'Closer region → lower latency',
+        cost: 'Pricing varies per region',
+        keyPoints: ['Compliance requirements','Proximity to users','Service availability','Pricing differences'],
+        examTip: 'Latency → choose nearest region. Compliance → region restriction'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['AWS Cloud','Cloud platform','Scalable systems','Global infrastructure'],
+        ['AWS Console','Management UI','Managing services','Web interface'],
+        ['Global Services','Global control','IAM, DNS','Not region-based'],
+        ['Regional Services','Compute/storage','Applications','Region-scoped'],
+        ['AWS Region','Deployment location','Low latency apps','Location-based'],
+      ]
+    }
+  },
+  {
+    id: 's2',
+    icon: '🔐',
+    title: 'IAM',
+    subtitle: 'Users, Groups & Security Tools',
+    topics: [
+      {
+        title: 'IAM Users',
+        keyword: 'user',
+        what: 'Individual identities created in AWS',
+        why: 'Provide access to people or applications',
+        useCase: 'Developer login, admin access',
+        security: 'Password + access keys + MFA',
+        reliability: 'Separate identities → controlled access',
+        performance: 'No impact',
+        cost: 'Free',
+        keyPoints: ['Each user has unique credentials','Can be assigned permissions via policies'],
+        examTip: 'Never use root account for daily tasks'
+      },
+      {
+        title: 'IAM Groups',
+        keyword: 'group',
+        what: 'Collection of IAM users',
+        why: 'Simplify permission management',
+        useCase: 'Team-based access (Dev, Admin, QA)',
+        security: 'Centralized permission control',
+        reliability: 'Easier to manage at scale',
+        performance: 'No impact',
+        cost: 'Free',
+        keyPoints: ['Users inherit permissions from group','Cannot nest groups'],
+        examTip: 'Assign permissions to groups, not users directly'
+      },
+      {
+        title: 'IAM Policies',
+        keyword: 'policy',
+        what: 'JSON documents defining permissions',
+        why: 'Control access to AWS services/resources',
+        useCase: 'Allow S3 read, deny EC2 delete',
+        security: 'Fine-grained access control',
+        reliability: 'Prevent unauthorized actions',
+        performance: 'No impact',
+        cost: 'Free',
+        keyPoints: ['Attached to users, groups, roles','Explicit DENY overrides ALLOW'],
+        examTip: 'If conflict → DENY always wins'
+      },
+      {
+        title: 'IAM Roles',
+        keyword: 'role',
+        what: 'Temporary access without credentials',
+        why: 'Secure service-to-service communication',
+        useCase: 'EC2 accessing S3',
+        security: 'No hardcoded credentials',
+        reliability: 'Automatic credential rotation',
+        performance: 'No impact',
+        cost: 'Free',
+        keyPoints: ['Used by AWS services','Supports cross-account access'],
+        examTip: 'Prefer roles over access keys'
+      },
+      {
+        title: 'MFA (Multi-Factor Authentication)',
+        keyword: 'MFA',
+        what: 'Adds second layer of authentication',
+        why: 'Protects accounts from unauthorized access',
+        useCase: 'Secure root and IAM users',
+        security: 'Very strong protection',
+        reliability: 'Prevents account compromise',
+        performance: 'No impact',
+        cost: 'Free (device cost possible)',
+        keyPoints: ['Use for root account','Works with virtual/physical devices'],
+        examTip: 'ALWAYS enable MFA for root'
+      },
+      {
+        title: 'Access Keys',
+        keyword: 'keys',
+        what: 'Credentials for programmatic access',
+        why: 'Allow CLI/SDK usage',
+        useCase: 'Applications accessing AWS APIs',
+        security: 'Must be kept secret',
+        reliability: 'Works globally',
+        performance: 'No impact',
+        cost: 'Free',
+        keyPoints: ['Consist of Access Key ID + Secret Key','Should NOT be hardcoded'],
+        examTip: 'Use IAM Roles instead of access keys when possible'
+      },
+      {
+        title: 'IAM Security Best Practices',
+        keyword: 'security',
+        what: 'Guidelines for securing AWS accounts',
+        why: 'Prevent breaches and misuse',
+        useCase: 'Organization-wide security setup',
+        security: 'Core purpose',
+        reliability: 'Reduces risk of failure due to compromise',
+        performance: 'No impact',
+        cost: 'Free',
+        keyPoints: ['Never use root account','Enable MFA','Use least privilege','Rotate credentials'],
+        examTip: 'If question mentions "secure setup" → think least privilege + MFA'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['IAM User','Individual access','People/apps','Unique credentials'],
+        ['IAM Group','Group permissions','Teams','Shared policies'],
+        ['IAM Policy','Permission control','Fine access','JSON rules'],
+        ['IAM Role','Temporary access','AWS services','No credentials'],
+        ['MFA','Extra security','Account protection','2FA'],
+        ['Access Keys','API access','CLI/SDK','Programmatic'],
+        ['IAM Security','Best practices','Secure setup','Least privilege'],
+      ]
+    }
+  },
+  {
+    id: 's3',
+    icon: '💻',
+    title: 'EC2 Basics',
+    subtitle: 'Compute Basics & Instance Types',
+    topics: [
+      {
+        title: 'Amazon EC2',
+        keyword: 'compute',
+        what: 'Virtual servers in the cloud',
+        why: 'Run applications without owning hardware',
+        useCase: 'Web servers, backend apps, APIs',
+        security: 'Security Groups, Key Pairs',
+        reliability: 'Multi-AZ deployment possible',
+        performance: 'Depends on instance type',
+        cost: 'Pay-as-you-go (On-demand, Reserved, Spot)',
+        keyPoints: ['Full control over OS','Scalable using Auto Scaling'],
+        examTip: 'If question says "full control server" → EC2'
+      },
+      {
+        title: 'EC2 Sizing & Configuration',
+        keyword: 'sizing',
+        what: 'Selecting CPU, RAM, storage, network',
+        why: 'Match workload requirements',
+        useCase: 'Choosing instance for app performance',
+        security: 'Depends on configuration (SG, IAM role)',
+        reliability: 'Right sizing prevents failure',
+        performance: 'Directly affects speed',
+        cost: 'Bigger instance = higher cost',
+        keyPoints: ['CPU, RAM, Storage, Network','Instance family matters'],
+        examTip: 'Over-provision = waste, under-provision = poor performance'
+      },
+      {
+        title: 'EC2 User Data',
+        keyword: 'automation',
+        what: 'Script executed at instance launch',
+        why: 'Automate setup (install software, config)',
+        useCase: 'Auto-install web server on launch',
+        security: 'Runs with root privileges',
+        reliability: 'Ensures consistent setup',
+        performance: 'No runtime impact',
+        cost: 'Free',
+        keyPoints: ['Runs only at first boot','Used for automation'],
+        examTip: 'Use User Data for boot-time automation'
+      },
+      {
+        title: 'General Purpose (t2, t3, m5)',
+        keyword: 'balanced',
+        what: 'Balanced CPU, memory, network',
+        why: 'Default choice for most apps',
+        useCase: 'Web servers, small apps',
+        security: 'Standard SG/IAM',
+        reliability: 'Stable for general workloads',
+        performance: 'Balanced',
+        cost: 'Moderate',
+        keyPoints: ['Best starting point'],
+        examTip: 'If no special requirement → choose General Purpose'
+      },
+      {
+        title: 'Compute Optimized (c5)',
+        keyword: 'CPU',
+        what: 'High CPU performance',
+        why: 'CPU-intensive workloads',
+        useCase: 'Gaming servers, batch processing',
+        security: 'Standard',
+        reliability: 'High for CPU-heavy tasks',
+        performance: 'High CPU',
+        cost: 'Higher than general',
+        keyPoints: ['Best for compute-heavy apps'],
+        examTip: 'CPU-heavy → choose Compute Optimized'
+      },
+      {
+        title: 'Memory Optimized (r5)',
+        keyword: 'RAM',
+        what: 'High RAM instances',
+        why: 'Memory-intensive workloads',
+        useCase: 'Databases, caching',
+        security: 'Standard',
+        reliability: 'Stable memory usage',
+        performance: 'High RAM',
+        cost: 'Expensive',
+        keyPoints: ['Used for in-memory DB'],
+        examTip: 'Large data in memory → choose Memory Optimized'
+      },
+      {
+        title: 'Storage Optimized (i3, d2)',
+        keyword: 'storage',
+        what: 'High disk throughput',
+        why: 'Storage-intensive workloads',
+        useCase: 'Big data, data warehousing',
+        security: 'Standard',
+        reliability: 'High I/O performance',
+        performance: 'Fast disk access',
+        cost: 'High',
+        keyPoints: ['Optimized for IOPS'],
+        examTip: 'High disk I/O → Storage Optimized'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['General Purpose','Balanced compute','Web apps','Balanced'],
+        ['Compute Optimized','High CPU','Processing','CPU-heavy'],
+        ['Memory Optimized','High RAM','Databases','Memory-heavy'],
+        ['Storage Optimized','High storage','Big data','High IOPS'],
+      ]
+    }
+  },
+  {
+    id: 's4',
+    icon: '💰',
+    title: 'EC2 Pricing',
+    subtitle: 'Purchasing Options & Cost Optimization',
+    topics: [
+      {
+        title: 'On-Demand Instances',
+        keyword: 'flexible',
+        what: 'Pay per use with no commitment',
+        why: 'Flexibility',
+        useCase: 'Short-term, unpredictable workloads',
+        security: 'Standard',
+        reliability: 'High (always available)',
+        performance: 'Standard',
+        cost: 'Most expensive',
+        keyPoints: ['No upfront payment','No long-term commitment'],
+        examTip: 'Use when workload is unpredictable'
+      },
+      {
+        title: 'Reserved Instances (RI)',
+        keyword: 'reserved',
+        what: 'Long-term reservation (1–3 years)',
+        why: 'Reduce cost',
+        useCase: 'Steady workloads',
+        security: 'Standard',
+        reliability: 'High',
+        performance: 'Same as EC2',
+        cost: 'Up to ~75% cheaper',
+        keyPoints: ['Standard & Convertible types'],
+        examTip: 'Predictable usage → Reserved Instances'
+      },
+      {
+        title: 'Savings Plans',
+        keyword: 'savings',
+        what: 'Flexible pricing model (commit usage $/hour)',
+        why: 'Save money with flexibility',
+        useCase: 'Consistent usage but flexible instance types',
+        security: 'Standard',
+        reliability: 'High',
+        performance: 'Same',
+        cost: 'Up to ~72% savings',
+        keyPoints: ['More flexible than RI'],
+        examTip: 'Want savings + flexibility → Savings Plan'
+      },
+      {
+        title: 'Spot Instances',
+        keyword: 'cheap',
+        what: 'Use unused AWS capacity',
+        why: 'Very cheap compute',
+        useCase: 'Batch jobs, non-critical workloads',
+        security: 'Standard',
+        reliability: 'LOW (can be terminated anytime)',
+        performance: 'High',
+        cost: 'Up to ~90% cheaper',
+        keyPoints: ['Can be interrupted anytime'],
+        examTip: 'Fault-tolerant workloads → Spot'
+      },
+      {
+        title: 'Dedicated Instances',
+        keyword: 'isolation',
+        what: 'Dedicated hardware (no sharing at instance level)',
+        why: 'Compliance & isolation',
+        useCase: 'Regulatory workloads',
+        security: 'High isolation',
+        reliability: 'High',
+        performance: 'Same',
+        cost: 'Expensive',
+        keyPoints: ['Instance-level isolation'],
+        examTip: 'Compliance → Dedicated Instance'
+      },
+      {
+        title: 'Dedicated Hosts',
+        keyword: 'host',
+        what: 'Physical server dedicated to you',
+        why: 'Full control over hardware',
+        useCase: 'Licensing requirements',
+        security: 'Maximum isolation',
+        reliability: 'High',
+        performance: 'Same',
+        cost: 'Very expensive',
+        keyPoints: ['Control over sockets/cores'],
+        examTip: 'Licensing requirement → Dedicated Host'
+      },
+      {
+        title: 'Capacity Reservation',
+        keyword: 'reserve',
+        what: 'Reserve capacity in a specific AZ',
+        why: 'Ensure availability',
+        useCase: 'Critical workloads',
+        security: 'Standard',
+        reliability: 'Guaranteed capacity',
+        performance: 'Same',
+        cost: 'Pay even if unused',
+        keyPoints: ['Ensures instance availability'],
+        examTip: 'Need guaranteed capacity → Capacity Reservation'
+      },
+      {
+        title: 'Spot Fleet',
+        keyword: 'fleet',
+        what: 'Collection of Spot + On-Demand instances',
+        why: 'Maintain target capacity',
+        useCase: 'Large-scale distributed systems',
+        security: 'Standard',
+        reliability: 'Better than Spot alone',
+        performance: 'Optimized',
+        cost: 'Balanced',
+        keyPoints: ['Mix of instance types'],
+        examTip: 'Want reliability + cheap → Spot Fleet'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['On-Demand','Flexibility','Short-term','No commitment'],
+        ['Reserved Instance','Cost saving','Long-term','Discount'],
+        ['Savings Plan','Flexible savings','Consistent usage','Flexible pricing'],
+        ['Spot Instance','Cheap compute','Batch jobs','Interruptible'],
+        ['Dedicated Instance','Isolation','Compliance','Dedicated hardware'],
+        ['Dedicated Host','Full control','Licensing','Physical server'],
+        ['Capacity Reservation','Availability','Critical apps','Guaranteed capacity'],
+        ['Spot Fleet','Mixed compute','Large scale','Cost optimization'],
+      ]
+    }
+  },
+  {
+    id: 's5',
+    icon: '🌐',
+    title: 'EC2 Networking',
+    subtitle: 'Networking & Advanced Features',
+    topics: [
+      {
+        title: 'Private vs Public IP (IPv4)',
+        keyword: 'IP',
+        what: 'Two types of IPs assigned to EC2',
+        why: 'Enable internal and external communication',
+        useCase: 'Private → internal; Public → internet access',
+        security: 'Private IP safer (not exposed to internet)',
+        reliability: 'Private IP stays within VPC',
+        performance: 'Internal traffic faster',
+        cost: 'Public IP may incur cost (Elastic IP)',
+        keyPoints: ['Private IP → inside VPC','Public IP → internet-facing'],
+        examTip: 'Internal communication → Private IP. Internet access → Public IP'
+      },
+      {
+        title: 'Placement Groups — Overview',
+        keyword: 'placement',
+        what: 'Control how EC2 instances are placed',
+        why: 'Optimize performance or availability',
+        useCase: 'High performance or fault tolerance',
+        security: 'No direct impact',
+        reliability: 'Depends on strategy',
+        performance: 'Can improve latency',
+        cost: 'No extra cost',
+        keyPoints: ['3 types: Cluster, Spread, Partition'],
+        examTip: 'Choose based on performance vs availability'
+      },
+      {
+        title: 'Placement Group — Cluster',
+        keyword: 'cluster',
+        what: 'Instances placed close together',
+        why: 'Low latency, high throughput',
+        useCase: 'HPC, big data',
+        security: 'Standard',
+        reliability: 'LOW (single AZ risk)',
+        performance: 'VERY HIGH',
+        cost: 'No extra cost',
+        keyPoints: ['Same AZ'],
+        examTip: 'Performance critical → Cluster'
+      },
+      {
+        title: 'Placement Group — Spread',
+        keyword: 'spread',
+        what: 'Instances spread across hardware',
+        why: 'Reduce failure risk',
+        useCase: 'Critical apps',
+        security: 'Standard',
+        reliability: 'VERY HIGH',
+        performance: 'Normal',
+        cost: 'No extra cost',
+        keyPoints: ['Max 7 instances per AZ'],
+        examTip: 'High availability → Spread'
+      },
+      {
+        title: 'Placement Group — Partition',
+        keyword: 'partition',
+        what: 'Instances divided into partitions',
+        why: 'Balance performance + fault tolerance',
+        useCase: 'Big data (Hadoop, Kafka)',
+        security: 'Standard',
+        reliability: 'HIGH',
+        performance: 'Good',
+        cost: 'No extra cost',
+        keyPoints: ['Each partition isolated'],
+        examTip: 'Large distributed systems → Partition'
+      },
+      {
+        title: 'Elastic Network Interface (ENI)',
+        keyword: 'network',
+        what: 'Virtual network card for EC2',
+        why: 'Flexible networking',
+        useCase: 'Attach/detach network interfaces',
+        security: 'Uses Security Groups',
+        reliability: 'Can move between instances',
+        performance: 'Network control',
+        cost: 'Free (pay for usage)',
+        keyPoints: ['Has private IP, security groups','Can attach multiple ENIs'],
+        examTip: 'Advanced networking → ENI'
+      },
+      {
+        title: 'EC2 Hibernate',
+        keyword: 'hibernate',
+        what: 'Saves RAM state to disk and stops instance',
+        why: 'Resume quickly',
+        useCase: 'Long-running apps',
+        security: 'Data stored in EBS',
+        reliability: 'Resume from same state',
+        performance: 'Faster restart',
+        cost: 'Pay for storage',
+        keyPoints: ['RAM saved to EBS'],
+        examTip: 'Need fast resume → Hibernate'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['Cluster','High performance','HPC','Low latency'],
+        ['Spread','Fault isolation','Critical apps','High availability'],
+        ['Partition','Balanced approach','Big data','Partitioned'],
+        ['Private IP','Internal comms','Backend','VPC-only'],
+        ['Public IP','Internet access','Web servers','Public-facing'],
+        ['ENI','Network interface','Flexible networking','Attach/detach'],
+      ]
+    }
+  },
+  {
+    id: 's6',
+    icon: '💾',
+    title: 'EC2 Storage & AMI',
+    subtitle: 'EBS, Snapshots, AMI & Instance Store',
+    topics: [
+      {
+        title: 'EBS Volume',
+        keyword: 'block',
+        what: 'Network-attached storage for EC2',
+        why: 'Persistent storage (data survives stop)',
+        useCase: 'Databases, OS disk, applications',
+        security: 'Encryption supported',
+        reliability: 'Replicated within AZ',
+        performance: 'High IOPS (depends on type)',
+        cost: 'Pay for storage used',
+        keyPoints: ['Attached to one instance at a time','Multiple volume types (gp, io, st)'],
+        examTip: 'Persistent storage → EBS'
+      },
+      {
+        title: 'EBS Snapshots',
+        keyword: 'backup',
+        what: 'Backup of EBS volume',
+        why: 'Data recovery & migration',
+        useCase: 'Backup, restore, cloning',
+        security: 'Stored in S3 (encrypted possible)',
+        reliability: 'Highly durable',
+        performance: 'Incremental backups',
+        cost: 'Pay for stored data',
+        keyPoints: ['Incremental (only changes saved)','Can copy across regions'],
+        examTip: 'Backup solution → Snapshot'
+      },
+      {
+        title: 'AMI Overview',
+        keyword: 'template',
+        what: 'Pre-configured template for EC2',
+        why: 'Launch instances quickly',
+        useCase: 'Standardized environments',
+        security: 'Controlled access (private/public)',
+        reliability: 'Consistent deployments',
+        performance: 'Fast launch',
+        cost: 'Storage cost only',
+        keyPoints: ['Includes OS + software + config'],
+        examTip: 'Reusable server setup → AMI'
+      },
+      {
+        title: 'AMI Creation Process',
+        keyword: 'clone',
+        what: 'Creating AMI from existing instance',
+        why: 'Replicate setup',
+        useCase: 'Scaling identical servers',
+        security: 'Inherits permissions',
+        reliability: 'Ensures same configuration',
+        performance: 'Faster deployment',
+        cost: 'Snapshot storage cost',
+        keyPoints: ['Stop instance (recommended)','Create image → snapshot created'],
+        examTip: 'Need identical instances → Create AMI'
+      },
+      {
+        title: 'EC2 Instance Store',
+        keyword: 'temporary',
+        what: 'Temporary storage attached to instance',
+        why: 'High-speed local storage',
+        useCase: 'Cache, buffer, temporary data',
+        security: 'Data lost on stop/terminate',
+        reliability: 'LOW (ephemeral)',
+        performance: 'VERY HIGH',
+        cost: 'Included in instance price',
+        keyPoints: ['Data lost when instance stops'],
+        examTip: 'Temporary data → Instance Store'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['EBS','Persistent storage','Databases','Durable'],
+        ['EBS Snapshot','Backup','Recovery','Incremental'],
+        ['AMI','Template','Deployment','Pre-configured'],
+        ['Instance Store','Temporary storage','Cache','Ephemeral'],
+      ]
+    }
+  },
+  {
+    id: 's7',
+    icon: '📀',
+    title: 'EBS Volume Types',
+    subtitle: 'Volume Types, Use Cases & Multi-Attach',
+    topics: [
+      {
+        title: 'General Purpose SSD (gp2 / gp3)',
+        keyword: 'balanced',
+        what: 'Balanced SSD storage',
+        why: 'Default EBS choice',
+        useCase: 'Boot volumes, general apps',
+        security: 'Encryption supported',
+        reliability: 'High',
+        performance: 'Balanced IOPS & throughput',
+        cost: 'Moderate',
+        keyPoints: ['gp3 cheaper and better than gp2'],
+        examTip: 'Default → General Purpose SSD'
+      },
+      {
+        title: 'Provisioned IOPS SSD (io1 / io2)',
+        keyword: 'IOPS',
+        what: 'High-performance SSD with fixed IOPS',
+        why: 'Critical applications need consistent performance',
+        useCase: 'Databases (Oracle, MySQL)',
+        security: 'Encryption supported',
+        reliability: 'VERY HIGH',
+        performance: 'VERY HIGH IOPS',
+        cost: 'Expensive',
+        keyPoints: ['io2 more durable than io1'],
+        examTip: 'Database + high IOPS → PIOPS'
+      },
+      {
+        title: 'HDD (st1 — Throughput Optimized)',
+        keyword: 'throughput',
+        what: 'Magnetic disk storage optimized for throughput',
+        why: 'Large data at low cost',
+        useCase: 'Big data, logs',
+        security: 'Encryption supported',
+        reliability: 'Lower than SSD',
+        performance: 'Throughput-based (not IOPS)',
+        cost: 'Cheap',
+        keyPoints: ['st1 → throughput optimized'],
+        examTip: 'Large data + low cost → HDD st1'
+      },
+      {
+        title: 'HDD (sc1 — Cold Storage)',
+        keyword: 'cold',
+        what: 'Cold HDD for infrequent access',
+        why: 'Lowest cost EBS option',
+        useCase: 'Archiving, infrequent access',
+        security: 'Encryption supported',
+        reliability: 'Lower than SSD',
+        performance: 'Low',
+        cost: 'Very cheap',
+        keyPoints: ['sc1 → cold storage'],
+        examTip: 'Cheap archive → sc1'
+      },
+      {
+        title: 'EBS Multi-Attach (io1/io2 only)',
+        keyword: 'shared',
+        what: 'Attach one EBS volume to multiple EC2 instances',
+        why: 'Shared storage',
+        useCase: 'Clustered applications',
+        security: 'Controlled via IAM & SG',
+        reliability: 'High (shared access)',
+        performance: 'High IOPS',
+        cost: 'High',
+        keyPoints: ['Only for io1/io2','Same AZ only'],
+        examTip: 'Shared storage across instances → Multi-Attach'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['gp2/gp3','Balanced storage','General apps','Cost-effective SSD'],
+        ['io1/io2','High IOPS','Databases','Consistent performance'],
+        ['st1','Throughput storage','Big data','High throughput'],
+        ['sc1','Cold storage','Infrequent access','Low cost'],
+        ['Multi-Attach','Shared storage','Clusters','Multi-instance'],
+      ]
+    }
+  },
+  {
+    id: 's8',
+    icon: '🔒',
+    title: 'EBS Encryption & EFS',
+    subtitle: 'Encryption, Elastic File System & Storage Classes',
+    topics: [
+      {
+        title: 'EBS Encryption',
+        keyword: 'encryption',
+        what: 'Encrypts EBS volumes using AWS-managed keys',
+        why: 'Protect sensitive data at rest',
+        useCase: 'Secure storage for databases, applications',
+        security: 'Strong (AES-256 encryption)',
+        reliability: 'No impact',
+        performance: 'Minimal/no impact',
+        cost: 'No extra cost for encryption',
+        keyPoints: ['Encryption is transparent','Snapshots also encrypted'],
+        examTip: 'Sensitive data → always enable encryption'
+      },
+      {
+        title: 'Encrypting Unencrypted EBS Volume',
+        keyword: 'convert',
+        what: 'Process to convert unencrypted → encrypted volume',
+        why: 'Upgrade security',
+        useCase: 'Existing workloads needing encryption',
+        security: 'Improves data protection',
+        reliability: 'Safe migration',
+        performance: 'Same',
+        cost: 'Snapshot storage cost',
+        keyPoints: ['Create snapshot','Copy snapshot with encryption','Create new encrypted volume'],
+        examTip: 'Cannot directly encrypt → must use snapshot'
+      },
+      {
+        title: 'Amazon EFS',
+        keyword: 'file',
+        what: 'Fully managed file storage (NFS)',
+        why: 'Shared storage across multiple instances',
+        useCase: 'Web servers, shared file systems',
+        security: 'Encryption + security groups',
+        reliability: 'Multi-AZ (highly available)',
+        performance: 'Scales automatically',
+        cost: 'More expensive than EBS',
+        keyPoints: ['Works with multiple EC2 instances','Linux only'],
+        examTip: 'Shared file system → EFS'
+      },
+      {
+        title: 'EFS Performance Modes',
+        keyword: 'scaling',
+        what: 'Different performance and cost options',
+        why: 'Optimize performance vs cost',
+        useCase: 'Scale applications dynamically',
+        security: 'Same as EFS',
+        reliability: 'High',
+        performance: 'Elastic scaling',
+        cost: 'Depends on class',
+        keyPoints: ['Performance modes: General Purpose / Max I/O','Throughput modes: Bursting / Provisioned'],
+        examTip: 'High scale → EFS automatic scaling'
+      },
+      {
+        title: 'EFS Storage Classes',
+        keyword: 'tier',
+        what: 'Different tiers for cost optimization',
+        why: 'Reduce storage cost',
+        useCase: 'Frequently vs infrequently accessed data',
+        security: 'Same',
+        reliability: 'High',
+        performance: 'Varies',
+        cost: 'IA cheaper than Standard',
+        keyPoints: ['Standard → frequent access','IA (Infrequent Access) → cheaper'],
+        examTip: 'Rarely used files → EFS IA'
+      },
+      {
+        title: 'EBS vs EFS Comparison',
+        keyword: 'compare',
+        what: 'Comparison between block vs file storage',
+        why: 'Choose correct storage type',
+        useCase: 'Architecture design decisions',
+        security: 'Both support encryption',
+        reliability: 'EFS > EBS (multi-AZ)',
+        performance: 'EBS → high IOPS; EFS → scalable',
+        cost: 'EFS more expensive',
+        keyPoints: ['EBS → single instance','EFS → multiple instances'],
+        examTip: 'Single instance → EBS. Shared storage → EFS'
+      }
+    ],
+    table: {
+      headers: ['Service','Primary Role','Best For','Key Characteristic'],
+      rows: [
+        ['EBS','Block storage','Databases','Single instance'],
+        ['EFS','File storage','Shared apps','Multi-instance'],
+        ['EFS IA','Cost optimization','Rare access','Cheap storage'],
+        ['EBS Encryption','Security','Sensitive data','Encryption'],
+        ['EFS Performance','Scaling','Large apps','Elastic'],
+      ]
+    }
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentSection = null;
+let currentTab = 'notes';
+let doneSet = new Set(JSON.parse(localStorage.getItem('aws_done') || '[]'));
+
+function saveDone() {
+  localStorage.setItem('aws_done', JSON.stringify([...doneSet]));
+}
+
+// ============================================================
+// SIDEBAR BUILD
+// ============================================================
+function buildSidebar() {
+  const nav = document.getElementById('sidebar-nav');
+  const existing = nav.innerHTML;
+  let html = existing;
+  SECTIONS.forEach(s => {
+    const isDone = doneSet.has(s.id) ? 'done' : '';
+    html += `
+      <div class="nav-item ${isDone}" data-view="section" data-id="${s.id}" id="nav-${s.id}">
+        <span class="nav-icon">${s.icon}</span>
+        <span>${s.title}</span>
+        <span class="nav-badge">${s.topics.length}</span>
+        <span class="nav-check">✓</span>
+      </div>`;
+  });
+  nav.innerHTML = html;
+  nav.querySelectorAll('.nav-item').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.dataset.view === 'home') showHome();
+      else if (el.dataset.view === 'section') showSection(el.dataset.id);
+    });
+  });
+}
+
+// ============================================================
+// HOME DASHBOARD
+// ============================================================
+function buildHome() {
+  // Stats
+  document.getElementById('hero-stats').innerHTML = `
+    <div class="hero-stat"><div class="stat-num">${SECTIONS.length}</div><div class="stat-label">Sections</div></div>
+    <div class="hero-stat"><div class="stat-num">${SECTIONS.reduce((a,s)=>a+s.topics.length,0)}</div><div class="stat-label">Topics</div></div>
+    <div class="hero-stat"><div class="stat-num" id="done-count">${doneSet.size}</div><div class="stat-label">Completed</div></div>
+  `;
+  // Grid
+  const grid = document.getElementById('topic-grid');
+  grid.innerHTML = SECTIONS.map(s => `
+    <div class="topic-card ${doneSet.has(s.id)?'done':''}" data-id="${s.id}">
+      <div class="tc-icon">${s.icon}</div>
+      <div class="tc-num">Section ${SECTIONS.indexOf(s)+1}</div>
+      <div class="tc-title">${s.title}</div>
+      <div class="tc-sub">${s.subtitle}</div>
+      <div class="tc-footer">
+        <span class="tc-count">${s.topics.length} topics</span>
+        <div class="tc-status-dot"></div>
+      </div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.topic-card').forEach(el => {
+    el.addEventListener('click', () => showSection(el.dataset.id));
+  });
+}
+
+function updateProgress() {
+  const pct = Math.round((doneSet.size / SECTIONS.length) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = pct + '%';
+  const dc = document.getElementById('done-count');
+  if (dc) dc.textContent = doneSet.size;
+  // Update nav items
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('nav-' + s.id);
+    if (el) el.classList.toggle('done', doneSet.has(s.id));
+  });
+  // Update grid cards
+  document.querySelectorAll('.topic-card').forEach(el => {
+    el.classList.toggle('done', doneSet.has(el.dataset.id));
+  });
+}
+
+// ============================================================
+// SHOW VIEWS
+// ============================================================
+function setActiveView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (id) document.getElementById('nav-' + id)?.classList.add('active');
+  else document.querySelector('.nav-item[data-view="home"]')?.classList.add('active');
+}
+
+function showHome() {
+  setActiveView('home-view');
+  setActiveNav(null);
+  document.getElementById('topbar-title').innerHTML = '<span>AWS SAA</span> Study Hub';
+  buildHome();
+  updateProgress();
+  closeSidebar();
+}
+
+function showSection(id) {
+  currentSection = SECTIONS.find(s => s.id === id);
+  if (!currentSection) return;
+  setActiveView('content-view');
+  setActiveNav(id);
+  document.getElementById('topbar-title').innerHTML = `<span>${currentSection.icon}</span> ${currentSection.title}`;
+  document.getElementById('cv-title').innerHTML = `${currentSection.icon} <span style="color:var(--orange)">${currentSection.title}</span>`;
+  document.getElementById('cv-sub').textContent = currentSection.subtitle;
+  const doneBtn = document.getElementById('mark-done-btn');
+  doneBtn.classList.toggle('done', doneSet.has(id));
+  doneBtn.textContent = doneSet.has(id) ? '✓ Completed!' : '✓ Mark as Done';
+
+  // Reset to notes tab
+  switchTab('notes');
+  closeSidebar();
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('tab-notes').style.display = tab === 'notes' ? '' : 'none';
+  document.getElementById('tab-flashcards').style.display = tab === 'flashcards' ? '' : 'none';
+  document.getElementById('tab-table').style.display = tab === 'table' ? '' : 'none';
+
+  if (tab === 'notes') renderNotes();
+  if (tab === 'flashcards') renderFlashcards();
+  if (tab === 'table') renderTable();
+}
+
+document.querySelectorAll('.view-tab').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// ============================================================
+// RENDER NOTES (Accordion)
+// ============================================================
+function renderNotes() {
+  const s = currentSection;
+  const container = document.getElementById('tab-notes');
+  container.innerHTML = `<div class="accordion-list fade-in">` +
+    s.topics.map((t, i) => `
+      <div class="accordion-item" id="acc-${i}">
+        <div class="accordion-header" onclick="toggleAccordion(${i})">
+          <span class="acc-icon">📌</span>
+          <span class="acc-title">${t.title}</span>
+          <span class="acc-keyword">${t.keyword}</span>
+          <span class="acc-chevron">▼</span>
+        </div>
+        <div class="accordion-body" id="acc-body-${i}">
+          <div class="accordion-body-inner">
+            <div class="info-grid">
+              <div class="info-cell"><div class="ic-label">What</div><div class="ic-value">${t.what}</div></div>
+              <div class="info-cell"><div class="ic-label">Why</div><div class="ic-value">${t.why}</div></div>
+              <div class="info-cell"><div class="ic-label">Use Case</div><div class="ic-value">${t.useCase}</div></div>
+              <div class="info-cell highlight-orange"><div class="ic-label">Security</div><div class="ic-value">${t.security}</div></div>
+              <div class="info-cell"><div class="ic-label">Reliability</div><div class="ic-value">${t.reliability}</div></div>
+              <div class="info-cell"><div class="ic-label">Performance</div><div class="ic-value">${t.performance}</div></div>
+              <div class="info-cell"><div class="ic-label">Cost</div><div class="ic-value">${t.cost}</div></div>
+            </div>
+            <div class="key-points-box">
+              <h4>Key Points</h4>
+              <ul>${t.keyPoints.map(k=>`<li>${k}</li>`).join('')}</ul>
+            </div>
+            <div class="exam-tip-box">
+              <span class="tip-icon">🎯</span>
+              <div class="tip-content">
+                <div class="tip-label">Exam Tip</div>
+                <p>${t.examTip}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('') + `</div>`;
+}
+
+function toggleAccordion(i) {
+  const item = document.getElementById('acc-' + i);
+  const body = document.getElementById('acc-body-' + i);
+  const isOpen = item.classList.contains('open');
+  item.classList.toggle('open', !isOpen);
+  body.style.maxHeight = isOpen ? '0' : body.scrollHeight + 'px';
+}
+
+// ============================================================
+// RENDER FLASHCARDS
+// ============================================================
+function renderFlashcards() {
+  const s = currentSection;
+  const container = document.getElementById('tab-flashcards');
+  container.innerHTML = `
+    <div class="fc-controls fade-in">
+      <button onclick="flipAll()">↻ Flip All</button>
+      <button onclick="resetAll()">↺ Reset</button>
+      <span class="fc-info">${s.topics.length} cards · Click to flip</span>
+    </div>
+    <div class="flashcard-grid fade-in">
+      ${s.topics.map((t, i) => `
+        <div class="flashcard" id="fc-${i}" onclick="flipCard(${i})">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="fc-label">Topic</div>
+              <div class="fc-q">${t.title}</div>
+              <div class="fc-hint">tap to reveal</div>
+            </div>
+            <div class="flashcard-back">
+              <div class="fc-answer">${t.examTip}</div>
+              <div class="fc-kw">${t.keyword}</div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function flipCard(i) {
+  document.getElementById('fc-' + i)?.classList.toggle('flipped');
+}
+
+let allFlipped = false;
+function flipAll() {
+  allFlipped = !allFlipped;
+  document.querySelectorAll('.flashcard').forEach(fc => {
+    fc.classList.toggle('flipped', allFlipped);
+  });
+}
+function resetAll() {
+  allFlipped = false;
+  document.querySelectorAll('.flashcard').forEach(fc => fc.classList.remove('flipped'));
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderTable() {
+  const s = currentSection;
+  const t = s.table;
+  const container = document.getElementById('tab-table');
+  container.innerHTML = `
+    <div class="comparison-section fade-in">
+      <div class="comp-section-title">Comparison Table — ${s.title}</div>
+      <div class="comp-table-wrap">
+        <table class="comp-table">
+          <thead><tr>${t.headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+          <tbody>${t.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// MARK AS DONE
+// ============================================================
+document.getElementById('mark-done-btn').addEventListener('click', () => {
+  const id = currentSection.id;
+  if (doneSet.has(id)) {
+    doneSet.delete(id);
+  } else {
+    doneSet.add(id);
+  }
+  saveDone();
+  const btn = document.getElementById('mark-done-btn');
+  btn.classList.toggle('done', doneSet.has(id));
+  btn.textContent = doneSet.has(id) ? '✓ Completed!' : '✓ Mark as Done';
+  updateProgress();
+});
+
+// ============================================================
+// GLOBAL SEARCH
+// ============================================================
+document.getElementById('global-search').addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  if (!q) {
+    if (currentSection) showSection(currentSection.id);
+    else showHome();
+    return;
+  }
+  setActiveView('search-view');
+  setActiveNav(null);
+  document.getElementById('topbar-title').innerHTML = `🔍 Search: <span>${q}</span>`;
+  const results = [];
+  SECTIONS.forEach(s => {
+    s.topics.forEach(t => {
+      const searchable = [t.title, t.what, t.why, t.useCase, t.examTip, t.keyword, ...t.keyPoints].join(' ').toLowerCase();
+      if (searchable.includes(q)) {
+        results.push({ section: s, topic: t });
+      }
+    });
+  });
+
+  document.getElementById('search-result-label').textContent = `${results.length} result${results.length !== 1 ? 's' : ''} for "${q}"`;
+
+  if (!results.length) {
+    document.getElementById('search-results-list').innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">🔍</div>
+        <h3>No results found</h3>
+        <p>Try a different keyword like "EC2", "IAM", "encryption"</p>
+      </div>`;
+    return;
+  }
+
+  function hl(text) {
+    return text.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), m => `<mark>${m}</mark>`);
+  }
+
+  document.getElementById('search-results-list').innerHTML = results.map(r => `
+    <div class="search-result-item fade-in" data-section="${r.section.id}">
+      <div class="sri-path">${r.section.icon} ${r.section.title} › ${r.topic.keyword}</div>
+      <div class="sri-title">${hl(r.topic.title)}</div>
+      <div class="sri-preview">${hl(r.topic.examTip)}</div>
+    </div>
+  `).join('');
+
+  document.querySelectorAll('.search-result-item').forEach(el => {
+    el.addEventListener('click', () => {
+      document.getElementById('global-search').value = '';
+      showSection(el.dataset.section);
+    });
+  });
+});
+
+// ============================================================
+// RESET PROGRESS
+// ============================================================
+document.getElementById('reset-progress-btn').addEventListener('click', () => {
+  if (confirm('Reset all progress?')) {
+    doneSet.clear();
+    saveDone();
+    updateProgress();
+    buildHome();
+  }
+});
+
+// ============================================================
+// MOBILE SIDEBAR
+// ============================================================
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+});
+document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildSidebar();
+buildHome();
+updateProgress();
+</script>
+</body>
+</html>
